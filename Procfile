@@ -1,0 +1,1 @@
+web: gunicorn FurniTech_project.wsgi
