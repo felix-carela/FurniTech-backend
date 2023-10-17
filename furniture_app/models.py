@@ -26,8 +26,6 @@ class Item(models.Model):
         return self.name
 
 
-
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -38,6 +36,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+
 
 class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=30, unique=True)
@@ -51,3 +50,4 @@ class CustomUser(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
