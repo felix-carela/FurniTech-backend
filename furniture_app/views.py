@@ -1,41 +1,42 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.shortcuts import render, HttpResponse
-from .forms import CustomUserCreationForm
+from django.contrib.auth.models import User
+from rest_framework import viewsets, serializers
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import login, logout, authenticate
+from .serializers import UserSerializer, UserCreateSerializer
 
-# Create your views here.
-def home(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    return render(request, 'home.html')
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
+@api_view(['POST'])
 def signup_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message": "User created successfully!"}, status=201)
+        return Response(serializer.errors, status=400)
 
+@api_view(['POST'])
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            form = AuthenticationForm(request.POST)
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user:
+        login(request, user)
+        return Response({"message": "Logged in successfully!"})
+    return Response({"error": "Invalid credentials"}, status=400)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def logout_view(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('login')
+    logout(request)
+    return Response({"message": "Logged out successfully!"})
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user_view(request):
+    request.user.delete()
+    return Response({"message": "User deleted successfully!"})

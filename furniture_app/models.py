@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models import JSONField
 
-
-
 STYLE_CHOICES = [
     ('Lighting', 'Lighting'),
     ('Furniture', 'Furniture'),
@@ -53,11 +51,3 @@ class CustomUser(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-
-
-class Order(models.Model):
-    order_details = JSONField()
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-    def __str__(self):
-        return f"Order ID: {self.id} | User: {self.order_details.get('user_id')} | Total: {self.total}"
