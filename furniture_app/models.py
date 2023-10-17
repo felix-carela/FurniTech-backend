@@ -1,13 +1,14 @@
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db.models import JSONField
 
 STYLE_CHOICES = [
-        ('Lighting', 'Lighting'),
-        ('Furniture', 'Furniture'),
-        ('Decor', 'Decor'),
-        ('Linens', 'Linens'),
-    ]
+    ('Lighting', 'Lighting'),
+    ('Furniture', 'Furniture'),
+    ('Decor', 'Decor'),
+    ('Linens', 'Linens'),
+]
+
 
 class Item(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -45,9 +46,8 @@ class CustomUser(AbstractBaseUser):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
-
