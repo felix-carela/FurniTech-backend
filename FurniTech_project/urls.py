@@ -20,3 +20,34 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+# from django.urls import include, path
+# from rest_framework import routers
+# from tutorial.quickstart import views
+
+# router = routers.DefaultRouter()
+# router.register(r'Item', views.ItemViewSet)
+# router.register(r'BaseUserManager', views.BaseUserManagerViewSet)
+# router.register(r'AbstractBaseUser', views.AbstractBaseUserViewSet)
+
+# # Wire up our API using automatic URL routing.
+# # Additionally, we include login URLs for the browsable API.
+# urlpatterns = [
+#     path('', include(router.urls)),
+#     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+# ]
+
+# from django.urls import include, path
+# from rest_framework import routers
+# from furniture_app import views
+
+
+# router = routers.DefaultRouter()
+# router.register(r'items', views.ItemViewSet)
+# router.register(r'abstract-base-users', views.AbstractBaseUserViewSet)
+# router.register(r'base-user-managers', views.BaseUserManagerViewSet)
+
+# urlpatterns = [
+#     path('', include(router.urls)),
+#     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+# ]
