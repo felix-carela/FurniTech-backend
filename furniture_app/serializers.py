@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from furniture_app.models import Item
 from rest_framework import serializers
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -20,3 +22,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+class ItemSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Item
+        fields = ['id','name', 'description', 'color', 'tags', 'category', 'price', 'image']

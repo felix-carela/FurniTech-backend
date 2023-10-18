@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Item, CustomUser, Order
+from .models import Item, CustomUser
+
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -32,20 +33,20 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_user_from_order_details', 'get_item_ids_from_order_details', 'total')
-    list_filter = ('order_details',)
-    search_fields = ('id',)
+# class OrderAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'get_user_from_order_details', 'get_item_ids_from_order_details', 'total')
+#     list_filter = ('order_details',)
+#     search_fields = ('id',)
 
-    def get_user_from_order_details(self, obj):
-        return obj.order_details.get('user_id')
+#     def get_user_from_order_details(self, obj):
+#         return obj.order_details.get('user_id')
     
-    get_user_from_order_details.short_description = 'User ID'
+#     get_user_from_order_details.short_description = 'User ID'
 
-    def get_item_ids_from_order_details(self, obj):
-        return ", ".join(str(item_id) for item_id in obj.order_details.get('item_ids', []))
+#     def get_item_ids_from_order_details(self, obj):
+#         return ", ".join(str(item_id) for item_id in obj.order_details.get('item_ids', []))
     
-    get_item_ids_from_order_details.short_description = 'Item IDs'
+#     get_item_ids_from_order_details.short_description = 'Item IDs'
 
 
-admin.site.register(Order, OrderAdmin)
+# admin.site.register(Order, OrderAdmin)
