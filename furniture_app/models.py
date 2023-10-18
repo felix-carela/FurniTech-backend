@@ -17,8 +17,8 @@ class Item(models.Model):
     color = models.CharField(max_length=50)
     tags = models.CharField(max_length=200)
     category = models.CharField(choices=STYLE_CHOICES, default='Furniture', max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    image = models.ImageField(upload_to='')
+    price = models.DecimalField(max_digits=100000, decimal_places=2, default=0.00)
+    image = models.URLField()
 
     class Meta:
         ordering = ['created']
