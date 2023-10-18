@@ -13,6 +13,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'username', 'email']
+        extra_kwargs = {
+            'username': {'required': True},  # Ensure that the username is required for updates
+        }
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

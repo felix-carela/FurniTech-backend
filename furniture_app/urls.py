@@ -15,12 +15,10 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('delete-user/', views.delete_user_view, name='delete-user'),
+    path('update-username/', views.update_username, name='update-username'),
 
     # Item-related endpoints
     path('items/', views.ItemViewSet.as_view({'get': 'list', 'post': 'create'}), name='item-list'),
-    path('items/create/', views.create_item, name='item-create'),
-    path('items/update/<int:pk>/', views.update_item, name='item-update'),
-    path('items/delete/<int:pk>/', views.delete_item, name='item-delete'),
 
     # Order-related endpoints
     path('orders/create/', views.create_order, name='order-create'),

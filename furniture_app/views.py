@@ -53,6 +53,30 @@ def delete_user_view(request):
     print(f"User {request.user.username} deleted!")
     return Response({"message": "User deleted successfully!"})
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_username(request):
+    print(request.data)
+    user = request.user
+    old_username = user.username  # Capture the old username before updating
+
+    # Check if the 'username' field is present in the request data
+    if 'username' not in request.data:
+        return Response({"error": "New username is required."}, status=400)
+
+    serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        new_username = user.username  # Capture the new username after updating
+
+        # Return a custom message indicating the success of the update
+        return Response({
+            "message": "Username updated successfully!",
+            "new_username": new_username
+        })
+    return Response(serializer.errors, status=400)
+
+
 
 class ItemViewSet(viewsets.ModelViewSet):
     """
@@ -66,47 +90,6 @@ def list_items(request):
     items = Item.objects.all()
     serializer = ItemSerializer(items, many=True)
     return Response(serializer.data)
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create_item(request):
-    serializer = ItemSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def update_item(request, pk):
-    try:
-        item = Item.objects.get(pk=pk)
-    except Item.DoesNotExist:
-        return Response({"error": "Item not found"}, status=404)
-
-    serializer = ItemSerializer(item, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=400)
-
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def delete_item(request, pk):
-    try:
-        item = Item.objects.get(pk=pk)
-    except Item.DoesNotExist:
-        return Response({"error": "Item not found"}, status=404)
-
-    item.delete()
-    return Response({"message": "Item deleted successfully!"})
-
-class OrderViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows orders to be viewed or edited.
-    """
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
