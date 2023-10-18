@@ -15,21 +15,21 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def signup_view(request):
     print("Signup View Called")
-    if request.method == 'POST':
-        serializer = UserCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            print(f"User {user.username} created successfully!")
-            return Response({"message": "User created successfully!"}, status=201)
-        print("Signup serializer errors:", serializer.errors)
-        return Response(serializer.errors, status=400)
+    serializer = UserCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        login(request, user)  # Log the user in after successful registration
+        print(f"User {user.username} created and logged in successfully!")
+        return Response({"message": "User created and logged in successfully!"}, status=201)
+    print("Signup serializer errors:", serializer.errors)
+    return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
 def login_view(request):
     print("Login View Called")
     username = request.data.get('username')
     password = request.data.get('password')
-    user = authenticate(username=username, password=password)
+    user = authenticate(request, username=username, password=password)  # Pass request to authenticate
     if user:
         login(request, user)
         print(f"User {user.username} logged in successfully!")
