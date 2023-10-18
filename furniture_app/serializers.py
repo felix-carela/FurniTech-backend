@@ -1,7 +1,13 @@
-from django.contrib.auth.models import User
-from furniture_app.models import Item
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import Item, Order
 
+User = get_user_model()
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['order_id', 'user', 'items', 'total_sales']
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

@@ -1,26 +1,12 @@
-from django.contrib.auth.models import User 
+from django.contrib.auth import get_user_model, login, logout, authenticate
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import login, logout, authenticate
-from .serializers import UserSerializer, UserCreateSerializer
-from furniture_app.models import Item
-from .serializers import ItemSerializer
-from rest_framework import viewsets
-from rest_framework import permissions
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from .models import Item
-from .serializers import ItemSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes,action
-from rest_framework.response import Response
+from .serializers import UserSerializer, UserCreateSerializer, OrderSerializer, ItemSerializer
+from .models import Item, Order
 
-
-
+User = get_user_model()
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -28,41 +14,45 @@ class UserViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def signup_view(request):
+    print("Signup View Called")
     if request.method == 'POST':
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            print(f"User {user.username} created successfully!")
             return Response({"message": "User created successfully!"}, status=201)
+        print("Signup serializer errors:", serializer.errors)
         return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
 def login_view(request):
+    print("Login View Called")
     username = request.data.get('username')
     password = request.data.get('password')
     user = authenticate(username=username, password=password)
     if user:
         login(request, user)
+        print(f"User {user.username} logged in successfully!")
         return Response({"message": "Logged in successfully!"})
+    print(f"Invalid credentials for username: {username}")
     return Response({"error": "Invalid credentials"}, status=400)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
+    print("Logout View Called")
     logout(request)
+    print("User logged out!")
     return Response({"message": "Logged out successfully!"})
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_user_view(request):
+    print("Delete User View Called for user:", request.user.username)
     request.user.delete()
+    print(f"User {request.user.username} deleted!")
     return Response({"message": "User deleted successfully!"})
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Item
-from .serializers import ItemSerializer
 
 class ItemViewSet(viewsets.ModelViewSet):
     """
@@ -83,8 +73,8 @@ def create_item(request):
     serializer = ItemSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -92,13 +82,13 @@ def update_item(request, pk):
     try:
         item = Item.objects.get(pk=pk)
     except Item.DoesNotExist:
-        return Response({"error": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Item not found"}, status=404)
 
     serializer = ItemSerializer(item, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=400)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -106,11 +96,30 @@ def delete_item(request, pk):
     try:
         item = Item.objects.get(pk=pk)
     except Item.DoesNotExist:
-        return Response({"error": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    # Check if the current user has permission to delete this item
-    if item.owner != request.user:
-        return Response({"error": "You don't have permission to delete this item"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"error": "Item not found"}, status=404)
 
     item.delete()
     return Response({"message": "Item deleted successfully!"})
+
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows orders to be viewed or edited.
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_order(request):
+    serializer = OrderSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_user_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'furniture_app',
+    'rest_framework.authtoken',
 ]
 
 REST_FRAMEWORK = {

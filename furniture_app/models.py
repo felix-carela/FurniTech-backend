@@ -1,6 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models import JSONField
 
 STYLE_CHOICES = [
     ('Lighting', 'Lighting'),
@@ -9,6 +7,15 @@ STYLE_CHOICES = [
     ('Linens', 'Linens'),
 ]
 
+class Order(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='orders')
+    items = models.ManyToManyField('Item', related_name='orders')
+    total_sales = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    order_id = models.AutoField(primary_key=True)
+
+    def __str__(self):
+        return f"Order {self.order_id} by {self.user.username}"
+    
 
 class Item(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -17,7 +24,7 @@ class Item(models.Model):
     color = models.CharField(max_length=50)
     tags = models.CharField(max_length=200)
     category = models.CharField(choices=STYLE_CHOICES, default='Furniture', max_length=100)
-    price = models.DecimalField(max_digits=100000, decimal_places=2, default=0.00)
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     image = models.URLField()
 
     class Meta:
@@ -25,29 +32,3 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        extra_fields.setdefault('is_active', True)
-        user = self.model(username=username, email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-
-class CustomUser(AbstractBaseUser):
-    username = models.CharField(max_length=30, unique=True)
-    email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
-
-    objects = CustomUserManager()
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['username']
-
-    def __str__(self):
-        return self.email
