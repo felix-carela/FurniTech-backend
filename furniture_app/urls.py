@@ -6,8 +6,10 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'items', views.ItemViewSet)
+router.register(r'orders', views.OrderViewSet)
 
 urlpatterns = [
+    path('order-create/', views.create_order, name='order-create'),
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     # User-related endpoints
@@ -21,7 +23,6 @@ urlpatterns = [
     path('items/', views.ItemViewSet.as_view({'get': 'list', 'post': 'create'}), name='item-list'),
 
     # Order-related endpoints
-    path('orders/create/', views.create_order, name='order-create'),
     path('orders/by-username/<str:username>/', views.get_orders_by_username, name='orders-by-username'),
 
 ]

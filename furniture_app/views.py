@@ -101,14 +101,10 @@ def create_order(request):
     print("Create Order View Called")
     serializer = OrderSerializer(data=request.data)
     if serializer.is_valid():
-        # Fetch the user based on the provided username
-        user = get_user_model().objects.get(username=serializer.validated_data['username'])
-        # Create the order
-        order = Order.objects.create(user=user)
-        # Handle order items (as you did before)
-        # ...
+        order = serializer.save()  # This will create both the order and its associated order items
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
 
 
 @api_view(['GET'])
