@@ -11,8 +11,7 @@ RH Furniture is an application designed to facilitate the exploration and purcha
 **Django Home Page**
 ![image](<Django Home page.png>)
 
-## App Start
-Frontend : 
+## Backend Heroku Link
 
 BackEnd : https://furnitech-backend-2f5a489a2b41.herokuapp.com/items/
 
