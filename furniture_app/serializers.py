@@ -1,11 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Item, Order
 from .models import Item, Order, OrderItem
 
 User = get_user_model()
-
-# serializers.py
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,11 +10,24 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['item', 'quantity']
 
 class OrderSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(write_only=True)  # Add this field
+    username = serializers.CharField(write_only=True)
+    order_items = OrderItemSerializer(many=True)  # Explicitly define this field
 
     class Meta:
         model = Order
         fields = ['order_id', 'username', 'order_items']
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop('order_items')
+        # Fetch the user based on the provided username
+        username = validated_data.pop('username')
+        user = get_user_model().objects.get(username=username)
+        # Create the order with the associated user
+        order = Order.objects.create(user=user, **validated_data)
+        for order_item_data in order_items_data:
+            item = order_item_data.pop('item')
+            OrderItem.objects.create(order=order, item=item, **order_item_data)
+        return order
 
     def validate_username(self, value):
         """
