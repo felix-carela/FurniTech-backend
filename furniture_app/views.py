@@ -8,6 +8,11 @@ from .models import Item, Order
 
 User = get_user_model()
 
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -92,17 +97,27 @@ def list_items(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_order(request):
+    print("Create Order View Called")
     serializer = OrderSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        # Fetch the user based on the provided username
+        user = get_user_model().objects.get(username=serializer.validated_data['username'])
+        # Create the order
+        order = Order.objects.create(user=user)
+        # Handle order items (as you did before)
+        # ...
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def list_user_orders(request):
-    orders = Order.objects.filter(user=request.user)
-    serializer = OrderSerializer(orders, many=True)
-    return Response(serializer.data)
+def get_orders_by_username(request, username):
+    try:
+        user = get_user_model().objects.get(username=username)
+        orders = Order.objects.filter(user=user)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+    except get_user_model().DoesNotExist:
+        return Response({"error": "User with this username does not exist."}, status=404)
+

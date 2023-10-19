@@ -7,14 +7,30 @@ STYLE_CHOICES = [
     ('Linens', 'Linens'),
 ]
 
+
+class OrderItem(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='order_items')
+    item = models.ForeignKey('Item', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.item.name} (x{self.quantity}) for Order {self.order.order_id}"
+
+
 class Order(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='orders')
-    items = models.ManyToManyField('Item', related_name='orders')
-    total_sales = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     order_id = models.AutoField(primary_key=True)
 
     def __str__(self):
         return f"Order {self.order_id} by {self.user.username}"
+
+    @property
+    def total(self):
+        total_cost = 0
+        for order_item in self.order_items.all():
+            total_cost += order_item.item.price * order_item.quantity
+        return total_cost
+
     
 
 class Item(models.Model):

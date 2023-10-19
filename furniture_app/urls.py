@@ -22,5 +22,6 @@ urlpatterns = [
 
     # Order-related endpoints
     path('orders/create/', views.create_order, name='order-create'),
-    path('orders/user/', views.list_user_orders, name='user-orders'),
+    path('orders/by-username/<str:username>/', views.get_orders_by_username, name='orders-by-username'),
+
 ]
