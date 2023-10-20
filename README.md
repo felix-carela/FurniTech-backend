@@ -33,13 +33,16 @@ this app let users can create their own account. before they sign in account, th
 ## API Endpoints
 - POST /order-create/: Create a new order.
 - POST /admin/: Create a new event.
+- Post /signup/ : Create a new user.
 - POST /login/: Log in and retrieve event details.
 - POST /logout/: Update event details.
 - DELETE /delete-user/: Delete a user.
 - PUT /update-username/: Update a user's username.
 - GET /item/: List all items.
-- POST /item/: Create a new item
+- POST /item/: Create a new item.
+- POST /update-username/ : update username.
 
+![image](<API Endpoints.png>)
 
 ## Database Schema
 
