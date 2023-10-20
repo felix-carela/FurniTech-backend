@@ -38,7 +38,7 @@ def login_view(request):
     if user:
         login(request, user)
         print(f"User {user.username} logged in successfully!")
-        return Response({"message": "Logged in successfully!"})
+        return Response({'username': user.username, 'email': user.email})
     print(f"Invalid credentials for username: {username}")
     return Response({"error": "Invalid credentials"}, status=400)
 
@@ -46,7 +46,7 @@ def login_view(request):
 @permission_classes([IsAuthenticated])
 def logout_view(request):
     print("Logout View Called")
-    logout(request)
+    print(request)
     print("User logged out!")
     return Response({"message": "Logged out successfully!"})
 
