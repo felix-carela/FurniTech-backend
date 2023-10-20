@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model, login, logout, authenticate
+from django.http import HttpResponse
 from rest_framework import viewsets
+from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -31,24 +33,29 @@ def signup_view(request):
 
 @api_view(['POST'])
 def login_view(request):
-    print("Login View Called")
     username = request.data.get('username')
     password = request.data.get('password')
-    user = authenticate(request, username=username, password=password)  # Pass request to authenticate
+    user = authenticate(request, username=username, password=password)  
     if user:
         login(request, user)
-        print(f"User {user.username} logged in successfully!")
-        return Response({'username': user.username, 'email': user.email})
-    print(f"Invalid credentials for username: {username}")
+        csrf_token = get_token(request)
+        session_id = request.session.session_key
+        return Response({'username': user.username, 'email': user.email, 'csrfToken': csrf_token, 'sessionId': session_id})
     return Response({"error": "Invalid credentials"}, status=400)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
-    print("Logout View Called")
-    print(request)
-    print("User logged out!")
-    return Response({"message": "Logged out successfully!"})
+    # Clear the user's session and CSRF cookie
+    logout(request)
+    request.session.flush()
+    
+    # Manually expire the cookies by setting a very short max_age
+    response = HttpResponse("Logged out successfully")
+    response.set_cookie('sessionid', '', max_age=1)
+    response.set_cookie('csrftoken', '', max_age=1)
+    
+    return response
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])

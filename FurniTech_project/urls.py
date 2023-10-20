@@ -9,7 +9,6 @@ router.register(r'items', views.ItemViewSet)
 router.register(r'orders', views.OrderViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', include('furniture_app.urls')), 
