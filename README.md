@@ -22,12 +22,13 @@ this app let users can create their own account. before they sign in account, th
 ## Technologies Used
 
 
-- `Django`
-- `JSON`
-- `Python`
-- `Postman`
-- `Heroku`
-- `CSRF Tokens`
+![Python](https://img.shields.io/badge/python-%2314354C.svg?style=for-the-badge&logo=python&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white) 
+![PostgreSQL](https://img.shields.io/badge/postgresql-%2320232a.svg?style=for-the-badge&logo=postgresql&logoColor=%23336791)
+
+
 
 
 ## API Endpoints
