@@ -44,7 +44,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'username', 'email']
         extra_kwargs = {
-            'username': {'required': True},  # Ensure that the username is required for updates
+            'username': {'required': True}
         }
 
 class UserCreateSerializer(serializers.ModelSerializer):
