@@ -11,17 +11,19 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
+    email = serializers.CharField(write_only=True)
     order_items = OrderItemSerializer(many=True)  # Explicitly define this field
 
     class Meta:
         model = Order
-        fields = ['order_id', 'username', 'order_items']
+        fields = ['order_id', 'username', 'email','order_items']
 
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items')
         # Fetch the user based on the provided username
         username = validated_data.pop('username')
         user = get_user_model().objects.get(username=username)
+        email = validated_data.pop('email')
         # Create the order with the associated user
         order = Order.objects.create(user=user, **validated_data)
         for order_item_data in order_items_data:
