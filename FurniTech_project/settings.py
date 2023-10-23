@@ -76,6 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     'https://furni-tech-frontend-fb8jc20wu-gerardoap22.vercel.app',
     'https://furni-tech.vercel.app',
+    'https://feature-workpls--playful-alpaca-c1fe99.netlify.app',
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -167,6 +168,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'https://furni-tech-frontend-fb8jc20wu-gerardoap22.vercel.app/',
     'https://furni-tech.vercel.app/',
+    'https://feature-workpls--playful-alpaca-c1fe99.netlify.app/',
 ]
 
 
@@ -199,6 +201,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'https://furni-tech-frontend-fb8jc20wu-gerardoap22.vercel.app/',
     'https://furni-tech.vercel.app/',
+    'https://feature-workpls--playful-alpaca-c1fe99.netlify.app/',
 ]
 
 django_heroku.settings(locals())
