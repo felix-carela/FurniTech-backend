@@ -74,6 +74,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    'https://furni-tech-frontend-fb8jc20wu-gerardoap22.vercel.app/',
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
