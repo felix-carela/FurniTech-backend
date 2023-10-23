@@ -67,24 +67,24 @@ def delete_user_view(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def update_username(request):
+def update_email(request):
     print(request.data)
     user = request.user
-    old_username = user.username  # Capture the old username before updating
+    old_email = user.email  # Capture the old email before updating
 
-    # Check if the 'username' field is present in the request data
-    if 'username' not in request.data:
-        return Response({"error": "New username is required."}, status=400)
+    # Check if the 'email' field is present in the request data
+    if 'email' not in request.data:
+        return Response({"error": "New email is required."}, status=400)
 
     serializer = UserSerializer(user, data=request.data, partial=True, context={'request': request})
     if serializer.is_valid():
         serializer.save()
-        new_username = user.username  # Capture the new username after updating
+        new_email = user.email  # Capture the new email after updating
 
         # Return a custom message indicating the success of the update
         return Response({
-            "message": "Username updated successfully!",
-            "new_username": new_username
+            "message": "Email updated successfully!",
+            "new_email": new_email
         })
     return Response(serializer.errors, status=400)
 

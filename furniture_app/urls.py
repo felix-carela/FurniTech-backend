@@ -17,7 +17,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('delete-user/', views.delete_user_view, name='delete-user'),
-    path('update-username/', views.update_username, name='update-username'),
+    path('update-email/', views.update_email, name='update-email'),
+
 
     # Item-related endpoints
     path('items/', views.ItemViewSet.as_view({'get': 'list', 'post': 'create'}), name='item-list'),
