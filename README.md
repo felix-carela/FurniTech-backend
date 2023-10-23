@@ -1,7 +1,7 @@
 
 # Furnitech
 
-RH Furniture is an application designed to facilitate the exploration and purchase of a wide array of furniture products. Users have the capability to establish an account, peruse an extensive inventory of furniture items, and conveniently add their selections to the shopping cart for either immediate or deferred acquisition.
+Furnitech is an application designed to facilitate the exploration and purchase of a wide array of furniture products. Users have the capability to establish an account, peruse an extensive inventory of furniture items, and conveniently add their selections to the shopping cart for either immediate or deferred acquisition.
 
 ## Wire Frames
 
