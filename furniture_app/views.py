@@ -7,6 +7,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, UserCreateSerializer, OrderSerializer, ItemSerializer
 from .models import Item, Order
+from django.contrib.sessions.models import Session
+from django.http import JsonResponse
+
 
 User = get_user_model()
 
@@ -26,8 +29,23 @@ def signup_view(request):
     if serializer.is_valid():
         user = serializer.save()
         login(request, user)  # Log the user in after successful registration
+        csrf_token = get_token(request)
+
+        # Ensure the session is saved and get the session ID
+        if not request.session.session_key:
+            request.session.save()
+        session_id = request.session.session_key
+
         print(f"User {user.username} created and logged in successfully!")
-        return Response({"message": "User created and logged in successfully!"}, status=201)
+        response_data = {
+            "username": user.username,
+            "email": user.email,
+            "csrfToken": csrf_token,
+            "sessionId": session_id,
+            "message": "User created and logged in successfully!"
+        }
+        return JsonResponse(response_data, status=201)
+
     print("Signup serializer errors:", serializer.errors)
     return Response(serializer.errors, status=400)
 
